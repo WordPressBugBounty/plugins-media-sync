@@ -624,6 +624,18 @@ if ( !class_exists( 'MediaSync' ) ) :
 
                         // This comes from JS and it's taken from checkbox value, which is $item['absolute_path'] from media_sync_get_list_of_files()
                         $absolute_path = urldecode($media_item['file']);
+
+                        $validated_path = self::media_sync_validate_path($absolute_path);
+                        if ($validated_path === false) {
+                            $results[] = array(
+                                'row_id' => $media_item['row_id'],
+                                'inserted' => false,
+                                'errorMessage' => __('Invalid file path.', 'media-sync')
+                            );
+                            continue;
+                        }
+                        $absolute_path = $validated_path;
+
                         $relative_path = self::media_sync_url_encode(self::media_sync_get_relative_path($absolute_path));
 
                         // It's quicker to get all files already in db and check that array, than to do this query for each file
@@ -990,6 +1002,46 @@ if ( !class_exists( 'MediaSync' ) ) :
 
 
         /**
+         * Validate that a path resolves within the uploads directory.
+         *
+         * @since 1.5.0
+         * @param string $path Absolute path to validate
+         * @return string|false Resolved canonical path, or false if invalid
+         */
+        static private function media_sync_validate_path($path)
+        {
+            // Reject stream wrappers e.g. ftp://, php://
+            if (strpos($path, '://') !== false) {
+                return false;
+            }
+
+            // Reject path traversal sequences
+            if (strpos($path, '..') !== false) {
+                return false;
+            }
+
+            // Resolve canonical uploads base path
+            $uploads_basedir = realpath(self::media_sync_get_uploads_basedir());
+            if ($uploads_basedir === false) {
+                return false;
+            }
+
+            // Resolve canonical path (also confirms the path exists on disk)
+            $resolved = realpath($path);
+            if ($resolved === false) {
+                return false;
+            }
+
+            // Confirm resolved path is within uploads
+            if (strpos($resolved, $uploads_basedir) !== 0) {
+                return false;
+            }
+
+            return $resolved;
+        }
+
+
+        /**
          * Get path absolute to WP root. Always using forward slashes.
          *
          * e.g. /var/www/WP/wp-content/uploads -> /wp-content/uploads
@@ -1027,8 +1079,11 @@ if ( !class_exists( 'MediaSync' ) ) :
             // Limit scanning to specific sub folder or encoded path (e.g. &sub_dir=2020%2F01)
             $sub_dir = self::sanitize_input_string(INPUT_GET, 'sub_dir');
             if ($sub_dir) {
-                // Since this path is always using forward slashes, we're also using forward slash
-                self::$upload_dir_path = self::$upload_dir_path . '/' . $sub_dir;
+                $sub_dir_validated = self::media_sync_validate_path( self::$upload_dir_path . '/' . $sub_dir );
+                if ( $sub_dir_validated === false ) {
+                    return array();
+                }
+                self::$upload_dir_path = $sub_dir_validated;
             }
 
             if(empty(self::$files_in_db)) {

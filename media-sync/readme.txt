@@ -3,9 +3,9 @@ Contributors: erolsk8, simonkane
 Donate link: https://mediasyncplugin.com/?utm_source=readme&utm_medium=base_plugin&utm_campaign=donate_link
 Tags: media, uploads, import, ftp, server
 Requires at least: 5.3
-Tested up to: 6.9
+Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 1.4.9
+Stable tag: 1.5.0
 License: GPLv2+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,10 +78,14 @@ Please first try to turn on debugging in Settings -> Media Sync and check [Netwo
 
 == Changelog ==
 
+= 1.5.0 =
+* Security: Fix path traversal vulnerability (CVE-2026-6670) in `sub_dir` and `media_items` parameters. File paths are now validated with `realpath()` and restricted to the "uploads" directory. Stream wrappers (e.g. `ftp://`, `php://`) are rejected. Reported by Drew Webber (mcdruid) via Wordfence.
+
 = 1.4.9 =
 * Fix regex to avoid PHP warnings.
 * Better error handling for expected memory or timeout issues when scanning for more files than your server is able to handle.
 * Tested for WordPress 6.9.
+* Tested for WordPress 6.9.4 and 7.0.
 
 = 1.4.8 =
 * Tested for WordPress 6.8
@@ -244,6 +248,9 @@ But there are options to choose before importing and also a possibility to overw
 * Initial plugin features
 
 == Upgrade Notice ==
+
+= 1.5.0 =
+Security update: Fix path traversal vulnerability (CVE-2026-6670) in `sub_dir` and `media_items` parameters. File paths are now validated with `realpath()` and restricted to the "uploads" directory. Stream wrappers (e.g. `ftp://`, `php://`) are rejected. Reported by Drew Webber (mcdruid) via Wordfence.
 
 = 0.1.0 =
 Initial plugin features
