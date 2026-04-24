@@ -5,7 +5,7 @@ Tags: media, uploads, import, ftp, server
 Requires at least: 5.3
 Tested up to: 7.0
 Requires PHP: 7.1
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv2+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,9 @@ Please first try to turn on debugging in Settings -> Media Sync and check [Netwo
 
 
 == Changelog ==
+
+= 1.5.1 =
+* Fix file name corruption on Windows caused by `realpath()` returning OS-native paths. Path validation now preserves the original file path after security checks pass.
 
 = 1.5.0 =
 * Security: Fix path traversal vulnerability (CVE-2026-6670) in `sub_dir` and `media_items` parameters. File paths are now validated with `realpath()` and restricted to the "uploads" directory. Stream wrappers (e.g. `ftp://`, `php://`) are rejected. Reported by Drew Webber (mcdruid) via Wordfence.
@@ -248,6 +251,9 @@ But there are options to choose before importing and also a possibility to overw
 * Initial plugin features
 
 == Upgrade Notice ==
+
+= 1.5.1 =
+Fix file name corruption on Windows caused by 1.5.0 security update.
 
 = 1.5.0 =
 Security update: Fix path traversal vulnerability (CVE-2026-6670) in `sub_dir` and `media_items` parameters. File paths are now validated with `realpath()` and restricted to the "uploads" directory. Stream wrappers (e.g. `ftp://`, `php://`) are rejected. Reported by Drew Webber (mcdruid) via Wordfence.

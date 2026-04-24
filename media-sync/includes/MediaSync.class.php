@@ -1037,7 +1037,7 @@ if ( !class_exists( 'MediaSync' ) ) :
                 return false;
             }
 
-            return $resolved;
+            return $path;
         }
 
 
