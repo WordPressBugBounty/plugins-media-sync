@@ -3,9 +3,9 @@ Contributors: erolsk8, simonkane
 Donate link: https://mediasyncplugin.com/?utm_source=readme&utm_medium=base_plugin&utm_campaign=donate_link
 Tags: media, uploads, import, ftp, server
 Requires at least: 5.3
-Tested up to: 7.0
+Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.5.2
+Stable tag: 1.5.3
 License: GPLv2+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,11 @@ Please first try to turn on debugging in Settings -> Media Sync and check [Netwo
 
 
 == Changelog ==
+
+= 1.5.3 =
+* Compatibility with WordPress 7.1 client-side media processing. Files that WordPress 7.1 creates alongside an upload (the original HEIC image kept next to its JPEG version, and the video and poster image generated from an animated GIF) are now correctly recognized as already being in the Media Library, so they are not offered for import as duplicates.
+* Also recognizes images edited in the Media Library (crop, rotate) as already imported.
+* Tested for WordPress 7.1.
 
 = 1.5.2 =
 * When importing images or PDFs, use embedded metadata title (PDF info dictionary, XMP, or EXIF) instead of the filename.
@@ -254,6 +259,9 @@ But there are options to choose before importing and also a possibility to overw
 * Initial plugin features
 
 == Upgrade Notice ==
+
+= 1.5.3 =
+Compatibility with WordPress 7.1 client-side media processing. Also recognizes images edited in the Media Library as already imported.
 
 = 1.5.1 =
 Fix file name corruption on Windows caused by 1.5.0 security update.

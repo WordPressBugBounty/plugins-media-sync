@@ -4,7 +4,9 @@
  * Plugin Name: Media Sync
  * Plugin URI: https://wordpress.org/plugins/media-sync/
  * Description: Simple plugin to scan uploads directory and bring files to Media Library.
- * Version: 1.5.2
+ * Version: 1.5.3
+ * Requires at least: 5.3
+ * Requires PHP: 7.4
  * Author: Media Sync Team
  * Author URI: https://mediasyncplugin.com/?utm_source=wordpress_dashboard&utm_medium=plugins_page&utm_campaign=pdal
  * License: GPLv2+

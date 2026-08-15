@@ -1425,10 +1425,32 @@ if ( !class_exists( 'MediaSync' ) ) :
                 // For large images - WordPress creates resized versions ("-scaled" at the end of file)
                 // https://make.wordpress.org/core/2019/10/09/introducing-handling-of-big-images-in-wordpress-5-3/
                 // So we also need to find and treat original file as "file in db"
+                //
+                // WordPress 7.1 client-side media processing also writes companion basenames into
+                // metadata: the HEIC/HEIF original kept beside its JPEG derivative, and the MP4 and
+                // poster JPEG generated from an animated GIF. All four keys resolve the same way.
                 $meta = wp_get_attachment_metadata( $post->ID );
-                if ( ! empty( $meta['original_image'] ) ) {
-                    $original_image_path           = self::media_sync_url_encode( $upload_dir_relative_path . $base_path . $meta['original_image'] );
-                    $files[ $original_image_path ] = $file;
+                foreach (
+                    array(
+                        'original_image',
+                        'source_image',
+                        'animated_video',
+                        'animated_video_poster'
+                    ) as $companion_key
+                ) {
+                    if ( ! empty( $meta[ $companion_key ] ) && is_string( $meta[ $companion_key ] ) ) {
+                        $companion_path           = self::media_sync_url_encode( $upload_dir_relative_path . $base_path . $meta[ $companion_key ] );
+                        $files[ $companion_path ] = $file;
+                    }
+                }
+
+                // Check if this is an edited image (crop, rotate, etc. in Media Library) and treat all those edits as "files in db"
+                $backup_sizes = get_post_meta( $post->ID, '_wp_attachment_backup_sizes', true );
+                if ( ! empty( $backup_sizes ) ) {
+                    foreach ( $backup_sizes as $backup_size ) {
+                        $backup_size_path           = self::media_sync_url_encode( $upload_dir_relative_path . $base_path . $backup_size['file'] );
+                        $files[ $backup_size_path ] = $file;
+                    }
                 }
             }
 
